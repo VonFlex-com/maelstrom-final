@@ -1,38 +1,326 @@
 .App {
   text-align: center;
+  display:flex;
+justify-content: center;
+align-items: center;
+color:azure;
+font-family: "Gill Sans", sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+:root {
+  --li-bg-color: rgb(26, 30, 37);
+  --txt-rating: rgb(110, 92, 71);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body{
+  background-color: rgb(38, 39, 40);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.container{
   display: flex;
+  height: 80vh;
+  width:120vh;
+  padding: 20px;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  color: antiquewhite;
+  font-size: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.todoForm{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 500px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.inputForm{
+  font-size: 0.9em;
+  text-align: left;
+  width: 100%;
+  border: solid 2px #8894a0;
+  padding: 5px;
+  background-color: rgb(29, 30, 32);
+  color:#8894a0;
+  resize:vertical;
+}
+
+.inputForm:focus{
+  text-align: left;
+ background-color: rgb(200, 151, 116);
+ color:rgb(9, 9, 41);
+  border: solid 2px rgb(221, 103, 34);
+  color: rgb(139, 37, 0);
+  outline-style: none;
+  box-shadow: none;
+  font-size: 0.9em;
+/*border-color: transparent;*/
+}
+
+.listButtons{
+  flex-direction: column;
+  display: flex;
+  flex:.3;
+  height: 90px;
+}
+
+.listInfos{
+  flex-direction: column;
+  display: flex;
+  flex:9;
+}
+
+.listButtons button{
+  border-radius: 5px;
+  width: 26px;
+}
+
+.radioContainer{
+  flex-direction: row;
+  display: flex;
+  width: auto;
+}
+
+.radioElem{
+  flex:.2;
+  margin-left: 90px;
+  margin-top: 5px;
+  margin-bottom: 7px;
+  height:40px;
+  border-radius: 5px;
+  line-height: 40px;
+  background-color: rgb(45, 49, 82);
+  border: solid 2px rgb(121, 131, 189);
+}
+
+.radioElem input:checked ~ .checkmark {
+  background-color: rgb(47, 59, 190);
+  border: solid 2px rgb(0, 38, 255);
+}
+
+.editButton{
+  background-image: url("../src/assets/crayon.png");
+  background-size: cover;
+  background-color: rgb(14, 152, 170);
+}
+
+.deleteButton{
+  background-image: url("../src/assets/croix.png");
+  background-size: cover;
+  background-color: rgb(201, 9, 51);
+}
+
+.whoButton{
+  background-image: url("../src/assets/nom.png");
+  background-size: cover;
+  background-color: rgb(86, 201, 9);
+}
+
+.starButton{
+  background-image: url("../src/assets/checkbox.png");
+  background-size: cover;
+  width:22px;
+  height: 22px;
+  float: right;
+  background-color: rgb(96, 119, 138);
+}
+
+.starButton:hover{
+  background-color: rgb(0, 96, 175);
+  border: none;
+}
+
+.showButton{
+  height:fit-content;
+  border: solid 2px white;
+  border-radius: 2px;
+  padding:12px 20px 12px 20px;
+  flex:1;
+  background-color:transparent;
+  font-size: 0.9em;
+  font-weight: 700;
+  color:aliceblue;
+}
+
+.showButton:hover{
+  background-color: rgb(48, 61, 116);
+  border: solid 2px rgb(223, 241, 255);
+  color:rgb(255, 255, 255);
+}
+
+button{
+  border: solid 2px transparent;
+  border-radius: 2px;
+  padding: 6px;
+  flex:1 10px;
+  margin: 2px;
+}
+
+button:hover{
+  background-color: rgb(193, 32, 208);
+  border: solid 2px rgb(221, 103, 34);
+}
+
+.topButton{
+  width: 100%;
+  margin-top: 6%;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
+  height: 3em;
+}
+
+#topButElem1{
+ flex:2;
+}
+
+#topButElem2{
+  flex:1;
+}
+
+.buttonSubmit{
+  display: flex;
+  flex-flow: row-reverse;
+  flex:.5 10px;
+  border: none;
+  width: 5em;
+  border-radius: 2px;
+  padding: 6px;
+  font-size: 1.1em;
+  border: solid 2px white;
+  background-color:transparent;
+  color:aliceblue;
+}
+
+.buttonSubmit:hover{
+  border: none;
+  width: 5em;
+  border-radius: 2px;
+  padding: 6px;
+  background-color: rgb(199, 107, 14);
+  color:rgb(231, 171, 17);
+  border: solid 2px transparent;
+}
+
+.submitButFlex{
+  display: flex;
+  flex-flow: row-reverse;
+}
+
+.textLi{
+  text-align: left;
+  padding-top: 2px;
+  padding-left: 4px;
+  font-size: 0.7em;
+  font-weight: 600;
+  color: #95a0ac;
+}
+
+.textTitle{
+  background-color: var(--li-bg-color);
+  text-align: left;
+  padding-left: 5px;
+  padding-bottom: 3px;
+  flex:9;
+  font-weight: 600;
+}
+
+.textRatingL
+{
+  flex:1;
+  font-weight: 700;
+  color: var(--txt-rating);
+  border-radius: 0 6px 0 0;
+  border: 1px solid var(--li-bg-color);
+  background-color: #bdc7cf;
+}
+
+.textRatingM
+{
+  flex:1;
+  font-weight: 700;
+  color: var(--txt-rating);
+  border-radius: 0 6px 0 0;
+  border: 1px solid var(--li-bg-color);
+  background-color: #d0d3e0;
+}
+
+.textRatingH
+{
+  flex:1;
+  font-weight: 700;
+  color: var(--txt-rating);
+  border-radius: 0 6px 0 0;
+  border: 1px solid var(--li-bg-color);
+  background-color: #e1e2ed;
+}
+
+.textDescr{
+  background-color: rgb(62, 64, 68);
+  color: rgb(207, 225, 225);
+  height:auto;
+  min-height: 40px;
+  text-align: justify;
+  text-justify: auto;
+  text-indent: 30px;
+  font-size: 0.7em;
+  padding: 0.6em;
+  text-overflow: ellipsis;
+  line-height: 0.9em;
+}
+
+.textDescr2
+{
+  background-color: rgb(44, 50, 109);
+  color: rgb(220, 235, 235);
+  height:auto;
+  min-height: 40px;
+  text-align: justify;
+  text-justify: auto;
+  text-indent: 30px;
+  font-size: 0.6em;
+  padding: 0.5em;
+  text-overflow: ellipsis;
+  line-height: 0.9em;
+}
+
+.textDescr3
+{
+  background-color: rgb(44, 62, 220);
+  color: rgb(220, 235, 235);
+  height:auto;
+  min-height: 40px;
+  text-align: justify;
+  text-justify: auto;
+  text-indent: 30px;
+  font-size: 1em;
+  padding: 0.5em;
+  text-overflow: ellipsis;
+  line-height: 0.9em;
+}
+
+.titleAndRating{
+  flex-direction: row;
+  display: flex;
+}
+
+.ulElem{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width:80%;
+  align-items: center;
+  background-color: transparent;
+}
+
+.liElem{
+
+  width: 98%;
+  padding: 5px;
+  margin: 3px;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
 }
