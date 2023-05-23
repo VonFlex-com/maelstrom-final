@@ -1,8 +1,10 @@
-[build]
  # Default build command.
  # command = "echo 'default context'"
  #CI='' npm run build
- CI= react-scripts build
+[build]
+  base = "/"
+  publish = "/"
+  command = ""
 
 
 # The following redirect is intended for use with most SPAs
