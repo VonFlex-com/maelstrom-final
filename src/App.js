@@ -20,7 +20,9 @@ import {onAuthStateChanged} from "firebase/auth";
 
 function App() {
 
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState("");
+
+  const [userColor, setUserColor] = useState([]);
 
   useEffect(() => {
       onAuthStateChanged(auth, (currentUser) => {
@@ -41,6 +43,8 @@ function App() {
 
   const [movies, setMovies] = useState([]);
   const moviesColectionRef = collection(db, "movies");
+
+  const usersCollection = collection(db, "users");
   
   //Overlay form boolean
   const [isOpen, setIsOpen] = useState(false);
@@ -62,6 +66,14 @@ function App() {
       setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
     }
   }
+
+  const getUserColor = async() => {
+    const data = await getDocs(query(usersCollection));
+    setUserColor(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+    console.log("users color data "+ userColor[0].color);
+  }
+
+ 
 
   //first letter capital for Title
   function capitalize(s)
@@ -160,10 +172,11 @@ return
 
   //displqy Poster name in alert
   const handlePoster = async (poster) => {
+    /*
     if(user===null){
       alert(warningLog);
       return;
-    }
+    }*/
     alert("Posted by " + poster)
   };
 
@@ -192,9 +205,13 @@ return
     <div className="App">
       <div className="container">
       <NavBar/>
+      <div className='navBarUnder'></div>
       <div className="topButton">
       <button id="topButElem1" disabled = {user===null} className="showButton" onClick={toggleOverlay}>{user===null?"MUST BE LOGGED IN TO POST":"ADD NEW ENTRY"}</button>
-      <div id="topButElem2"></div>
+      <div id="topButElem2">
+        <img />
+      <a className="discord" title='discord link' href="https://discord.com/channels/1112292195207217233/1112292196943663158">Discord server</a>
+      </div>
       <button id="topButElem2" className="showButton" onClick={toggleIsAlphabetical}>{isAlphabetical?"SORT ALPHABETICALY":"SORT BY RATING"}</button>
       </div>
         <Overlay isOpen={isOpen} onClose={toggleOverlay}>

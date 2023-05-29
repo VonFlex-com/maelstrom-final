@@ -57,6 +57,35 @@ body{
 /*border-color: transparent;*/
 }
 
+
+
+.discord {
+  background-image: url("../src/assets/discord-logo.png");
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position:top;
+  background-clip: border-box;
+
+  display: block;
+  width: auto;
+  height: 40px;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  text-indent: 100%;
+  white-space:nowrap;
+}
+
+.navBarUnder{
+  overflow: hidden;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  height:10%;
+  background-color: transparent;
+  width: 100%;
+  pointer-events: none;
+}
+
 .listButtons{
   flex-direction: column;
   display: flex;
@@ -169,7 +198,8 @@ button:hover{
   align-items: center;
   justify-content: space-between;
   background-color: transparent;
-  height: 3em;
+  height: auto;
+  padding: 30px;
 }
 
 #topButElem1{

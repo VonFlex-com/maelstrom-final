@@ -76,7 +76,7 @@ const NavBar = () => {
                 <li>
                 <p className='navBarMessage'>{user ? "Logged as "+user.email : "Not Logged In"}</p>
                 </li>
-                {!isLogged && <><li>
+                {!isLogged&&!user&&<><li>
                 <input placeholder='Email' 
                 className="inputForm"
                 value={email}
@@ -98,7 +98,7 @@ const NavBar = () => {
                 onClick={login}
                 >LOGIN</button>
                 </li></>}
-                {isLogged && <><li>
+                {user!=null && <><li>
                 <button className="showButton"
                 onClick={logout}
                 >LOGOUT</button>
