@@ -80,7 +80,7 @@ body{
   overflow: hidden;
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
-  height:10%;
+  height:12%;
   background-color: transparent;
   width: 100%;
   pointer-events: none;
@@ -192,7 +192,7 @@ button:hover{
 
 .topButton{
   width: 100%;
-  margin-top: 6%;
+  margin-top: 10%;
   display: flex;
   flex-flow: row;
   align-items: center;

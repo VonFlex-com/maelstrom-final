@@ -2,7 +2,7 @@ import { useState, useEffect} from 'react';
 import "./navBar.css";
 import "../App.css";
 import {auth} from "../firebase-config";
-import { createUserWithEmailAndPassword,
+import { //createUserWithEmailAndPassword,
      signOut, 
      onAuthStateChanged, 
      signInWithEmailAndPassword } from "firebase/auth";
@@ -25,9 +25,11 @@ const NavBar = () => {
  
     const  [isLogged, setIsLogged] = useState(false);
 
+    /*
     const checkLog = () =>{
         return isLogged;
     }
+    */
 
     const login = async () => {
         try{ 
@@ -36,7 +38,7 @@ const NavBar = () => {
             email, 
             password
             );
-        console.log(user);
+        //console.log(user);
         setIsLogged(true);
         setEmail('');
         setPassword('');
@@ -58,6 +60,7 @@ const NavBar = () => {
         setIsLogged(false);
     };
 
+    /*
     const register = async () => {
         try{ 
             const user = await createUserWithEmailAndPassword(auth, email, password);
@@ -66,19 +69,20 @@ const NavBar = () => {
             console.error(err);
         }
     };
+    */
 
     return (
         <div className="navBar">
             <ul className="navBarUl">
                 <li>
-                <h1>MAELSTRÖM 2</h1>
+                <p className='TitleNavbar'>MAELSTRÖM</p>
                 </li>
                 <li>
                 <p className='navBarMessage'>{user ? "Logged as "+user.email : "Not Logged In"}</p>
                 </li>
                 {!isLogged&&!user&&<><li>
                 <input placeholder='Email' 
-                className="inputForm"
+                className="inputFormNavbar"
                 value={email}
                 //defaultValue={''}
                 onChange={(e) => setEmail(e.target.value)}
@@ -86,7 +90,7 @@ const NavBar = () => {
                 </li>
                 <li>
                 <input placeholder='Password' 
-                className="inputForm"
+                className="inputFormNavbar"
                 value={password}
                 //defaultValue={''}
                 type='password'
@@ -94,12 +98,12 @@ const NavBar = () => {
                 />
                 </li>
                 <li>
-                <button className="showButton"
+                <button className="ButtonNavbar"
                 onClick={login}
                 >LOGIN</button>
                 </li></>}
                 {user!=null && <><li>
-                <button className="showButton"
+                <button className="ButtonNavbar"
                 onClick={logout}
                 >LOGOUT</button>
                 </li></>}

@@ -22,7 +22,7 @@ function App() {
 
   const [user, setUser] = useState("");
 
-  const [userColor, setUserColor] = useState([]);
+ // const [userColor, setUserColor] = useState([]);
 
   useEffect(() => {
       onAuthStateChanged(auth, (currentUser) => {
@@ -44,7 +44,7 @@ function App() {
   const [movies, setMovies] = useState([]);
   const moviesColectionRef = collection(db, "movies");
 
-  const usersCollection = collection(db, "users");
+  //const usersCollection = collection(db, "users");
   
   //Overlay form boolean
   const [isOpen, setIsOpen] = useState(false);
@@ -67,13 +67,17 @@ function App() {
     }
   }
 
+  /*
   const getUserColor = async() => {
     const data = await getDocs(query(usersCollection));
     setUserColor(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
-    console.log("users color data "+ userColor[0].color);
-  }
 
- 
+    //console.log("user ID = "+userColor[0].id+"users color data "+ userColor[0].color);
+    //const movuDoc = doc(db, "users", 0);
+  }
+  */
+
+  //getUserColor();
 
   //first letter capital for Title
   function capitalize(s)
@@ -89,6 +93,14 @@ function App() {
   const createMovie = async() => {
     if(isUpdating === false){
     let titleWork = capitalize(newTitle);
+    /*
+    if(!user){
+    const userId = user.uid
+    const userInUser = doc(db, "users", userId);
+   const color=userInUser.color;
+   console.log('color = '+color);
+    }
+    */
     await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(newRating), poster: newPoster})
     getMovies();
     setIsOpen(!isOpen);
@@ -167,7 +179,7 @@ function App() {
     setNewDescr(newDesc);
     setNewRating(newRat);
     setNewPoster(newPost);
-return
+  return;
   };
 
   //displqy Poster name in alert
@@ -197,6 +209,10 @@ return
   const toggleIsAlphabetical = () =>
   {
     setIsAlphabetical(!isAlphabetical);
+    //getUserColor();
+    
+    //console.log(userColor[0].id);
+    //console.log(user.uid);
     //console.log("in toggle Alphabetical is = "+isAlphabetical);
     getMovies();
   }
@@ -209,7 +225,6 @@ return
       <div className="topButton">
       <button id="topButElem1" disabled = {user===null} className="showButton" onClick={toggleOverlay}>{user===null?"MUST BE LOGGED IN TO POST":"ADD NEW ENTRY"}</button>
       <div id="topButElem2">
-        <img />
       <a className="discord" title='discord link' href="https://discord.com/channels/1112292195207217233/1112292196943663158">Discord server</a>
       </div>
       <button id="topButElem2" className="showButton" onClick={toggleIsAlphabetical}>{isAlphabetical?"SORT ALPHABETICALY":"SORT BY RATING"}</button>
@@ -273,6 +288,8 @@ return
 
       <PostList
         movies={movies}
+        //color={userColor[0].color}
+        //style={{backgroundColor : {color}}}
         getMovie={getMovie}
         deleteMovie={deleteMovie}
         handlePoster={handlePoster}
