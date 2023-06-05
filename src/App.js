@@ -39,23 +39,23 @@ function App() {
   const [newDescr, setNewDescr] = useState("");
   const [newRating, setNewRating] = useState(0);
   const [newPoster, setNewPoster] = useState("");
-  //const [newTime, setNewTime] = useState("");
-  //const [newColor, setNewColor] = useState('');
+  const [newTime, setNewTime] = useState("new");
+  const [newColor, setNewColor] = useState('');
   //const [newGenre, setNewGenre] = useState("");
 
   const [editId, setEditId] = useState(0);
 
-  /*
-  const colorIndex = [
-    { id: 'MEGSNWeLIbXI2RG2ji7vf4pGGzo2', color: '#333943', name: 'admin'},
-    { id: 'amdnNVoCnFg21MZtQbWvikH9Q0r2', color: '#334341', name: 'thib'},
-    { id: 'bug3wGxTNKMeVrgiF58hcz9vZBn1', color: '#334336', name: 'gael'},
-    { id: '26VXYlcNZ0PR2TroSTj4kpcsEZc2', color: '#334336', name: 'fausto'},
-    { id: 'JuTO8hC1k1X4F4G9FRN4YM44XDd2', color: '#334336', name: 'mila'},
-  ];
-  */
+  const [currentRadioValue, setCurrentValue] = useState('new');
 
-  //const [colIndexes, setcolIndexes] = useState(colorIndex);
+  const colorIndex = [
+    { id: 'MEGSNWeLIbXI2RG2ji7vf4pGGzo2', color: '#333943', name: 'Mark'},
+    { id: 'amdnNVoCnFg21MZtQbWvikH9Q0r2', color: '#334341', name: 'Thibaut'},
+    { id: 'bug3wGxTNKMeVrgiF58hcz9vZBn1', color: '#334336', name: 'Gael'},
+    { id: '26VXYlcNZ0PR2TroSTj4kpcsEZc2', color: '#1a1a00', name: 'Fausto'},
+    { id: 'JuTO8hC1k1X4F4G9FRN4YM44XDd2', color: '#660033', name: 'Mila'},
+  ];
+
+  const [colIndexes, setcolIndexes] = useState(colorIndex);
 
   const [movies, setMovies] = useState([]);
   const moviesColectionRef = collection(db, "movies");
@@ -65,27 +65,12 @@ function App() {
   //Overlay form boolean
   const [isOpen, setIsOpen] = useState(false);
 
-  //const [isAlphabetical, setIsAlphabetical] = useState(false);
-  //console.log("First Alphabetical is = "+isAlphabetical);
-
   const [isUpdating, setIsUpdating] = useState(false);
 
   //Get all the list to render
   const getMovies = async() => {
     const data = await getDocs(query(moviesColectionRef, orderBy("title")));
       setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
-    //toggleIsAlphabetical(!isAlphabetical);
-    //console.log("Alphabetical is = "+isAlphabetical);
-    /*
-    if(isAlphabetical){
-   // const data = await getDocs(query(moviesColectionRef, orderBy("title")));
-    const data = await getDocs(query(moviesColectionRef, orderBy("title")));
-      setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
-    }else{
-      const data = await getDocs(query(moviesColectionRef, orderBy("rating", "desc")));
-      setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
-    }
-    */
   }
 
   /*
@@ -97,6 +82,23 @@ function App() {
     //const movuDoc = doc(db, "users", 0);
   }
   */
+  const  Getdata = () =>{
+    if(user!==null){
+      colIndexes.map(item => {
+        if (item.id === user.uid) {
+          setNewColor(item.color);
+          setNewPoster(item.name);
+         // console.log("color = "+newColor+', poster = '+newPoster+', time = '+newTime);
+          //console.log('user color = '+item.color+', name = '+item.name);
+          return;
+        } else {
+          return;
+        }
+      })
+    }else{
+      return;
+    }
+  }
 
   //first letter capital for Title
   function capitalize(s)
@@ -112,6 +114,7 @@ function App() {
   const createMovie = async() => {
     if(isUpdating === false){
     let titleWork = capitalize(newTitle);
+ 
     /*
     if(!user){
     const userId = user.uid
@@ -120,9 +123,13 @@ function App() {
    console.log('color = '+color);
     }
     */
-    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(newRating), poster: newPoster})
+    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(1), poster: newPoster, uid: user.uid, color:newColor, time:newTime})
     getMovies();
     setIsOpen(!isOpen);
+        //reset fields
+        setNewTitle("");
+        setNewDescr("");
+        setNewTime('new');
     }else{
       handleEdit(editId);
       setIsOpen(!isOpen);
@@ -161,14 +168,15 @@ function App() {
     //close overlay
     toggleOverlay();
     const movieDoc = doc(db, "movies", id)
-    const newFields = {title: newTitle, description: newDescr, rating: Number(newRating), poster: newPoster};
+    const newFields = {title: newTitle, description: newDescr, time:newTime};
     await updateDoc(movieDoc, newFields);
 
     //reset fields
     setNewTitle("");
     setNewDescr("");
-    setNewRating(0);
-    setNewPoster("");
+    setNewTime('new');
+    //setNewRating(0);
+    //setNewPoster("");
     setIsUpdating(!isUpdating);
 
     getMovies();
@@ -191,13 +199,15 @@ function App() {
 
    const newTi = data.title;
    const newDesc = data.description;
-   const newRat = data.rating;
-   const newPost = data.poster;
+   const newtim = data.time;
+   //const newRat = data.rating;
+   //const newPost = data.poster;
 
     setNewTitle(newTi);
     setNewDescr(newDesc);
-    setNewRating(newRat);
-    setNewPoster(newPost);
+    setNewTime(newtim);
+    //setNewRating(newRat);
+    //setNewPoster(newPost);
   return;
   };
 
@@ -214,6 +224,8 @@ function App() {
   //toggle Overlay
   const toggleOverlay = () => {
     setIsOpen(!isOpen);
+    //>...............................?
+    Getdata();
   };
 
   //Submit button validation emptiness 
@@ -224,64 +236,41 @@ function App() {
     return false;
   }
 
-/*
-  //toggle list order
-  const toggleIsAlphabetical = () =>
-  {
-    setIsAlphabetical(!isAlphabetical);
-    //getUserColor();
-    
-    if(user!==null){
-    colIndexes.map(item => {
-      if (item.id === user.uid) {
-        setNewColor(item.color);
-        console.log('user color = '+item.color+', name = '+item.name);
-        return;
-      } else {
-        console.log('no user uid');
-        return;
-      }
-    })
-  }else{
-    console.log('no user');
-  }
-  
-    //console.log(userColor[0].id);
-    //console.log(user.uid);
-    //console.log("in toggle Alphabetical is = "+isAlphabetical);
-    getMovies();
-  }
-*/
-
+//----------->Order by options
   const handleMenuOne = async () => {
-    console.log('clicked alphabet');
+   // console.log('clicked alphabet');
     const data = await getDocs(query(moviesColectionRef, orderBy("title")));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
 
   const handleMenuTwo = async () => {
-    console.log('clicked rating');
+   // console.log('clicked rating');
     const data = await getDocs(query(moviesColectionRef, orderBy("rating", "desc")));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
 
   const handleMenuThree = async () => {
-    console.log('clicked new');
+    //console.log('clicked new');
     const data = await getDocs(query(moviesColectionRef,where("time",'==','new')));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
 
   const handleMenuFour = async () => {
-    console.log('clicked recent');
+   // console.log('clicked recent');
     const data = await getDocs(query(moviesColectionRef,where("time",'==','recent')));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
 
   const handleMenuFive = async () => {
-    console.log('clicked classic');
+    //console.log('clicked classic');
     const data = await getDocs(query(moviesColectionRef,where("time",'==','classic')));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
+
+  const onOptionChange = e => {
+    setNewTime(e.target.value);
+//console.log('change time '+newTime);
+  }
 
   const Dropdown = ({ trigger, menu }) => {
     const [open, setOpen] = useState(false);
@@ -360,28 +349,41 @@ function App() {
           setNewDescr(event.target.value);
         }}
       />
-      <label className="textLi">RATING</label>
-      <input 
-        className="inputForm"
-        type="number"
-        placeholder="Movie rating..." 
-        value = {newRating}
-        onChange={(event)=>{
-          event.preventDefault();
-          setNewRating(event.target.value);
-        }}
-      />
-      <label className="textLi">POSTER</label>
-      <input
-        className="inputForm"
-        placeholder="Movie poster..."
-        value = {newPoster}
-        type="text"
-        onChange={(event)=>{
-          event.preventDefault();
-          setNewPoster(event.target.value);
-        }}
-      />
+      <label className="textLi">FRESHNESS</label>
+      <div className="radioContainer">
+        <div className="radioElem">
+          <input
+            name="radio-item-1"
+            value="new"
+            type="radio"
+            checked={newTime === "new"}
+            onChange={onOptionChange}
+          />
+          <label htmlFor="radio-item-1">NEW</label>
+        </div>
+
+        <div className="radioElem">
+          <input
+          className="inputRadio"
+            name="radio-item-1"
+            value="recent"
+            type="radio"
+            checked={newTime === "recent"}
+            onChange={onOptionChange}
+          />
+          <label htmlFor="radio-item-2">RECENT</label>
+        </div>
+        <div className="radioElem">
+          <input
+            name="radio-item-1"
+            value="classic"
+            type="radio"
+            checked={newTime === "classic"}
+            onChange={onOptionChange}
+          />
+          <label htmlFor="radio-item-3">CLASSIC</label>
+        </div>
+        </div>
 
       <div className="submitButFlex">
         <button className="buttonSubmit" 

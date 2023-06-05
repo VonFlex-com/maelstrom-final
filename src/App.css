@@ -111,8 +111,7 @@ body{
 }
 
 .radioElem{
-  flex:.2;
-  margin-left: 90px;
+  flex:1;
   margin-top: 5px;
   margin-bottom: 7px;
   height:40px;
