@@ -7,10 +7,13 @@ const PostList = ({ movies, deleteMovie, getMovie, handlePoster, updateRating })
 <li className="liElem" key={t.id}>
 <div className="listInfos">
   <div className="titleAndRating">
-      <span className="textTitle">
+      <span className="textTitle" style={{backgroundColor :t.color}}>
         {t.title}
       </span>
-      <span className={t.rating===1?"textRatingL":t.rating===2?"textRatingM":"textRatingH"}>
+      <span className={t.time==='new'?"textTime":t.time==='recent'?"textTime2":"textTime3"}>
+        {t.time}
+      </span>
+      <span className="textRatingH">
         {t.rating}<button className="starButton" onClick={() => updateRating(t.id, t.rating)}></button>
       </span>
       </div>

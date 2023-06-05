@@ -1,5 +1,6 @@
 .navBar{
     overflow: hidden;
+    z-index: 100;
     position: fixed; /* Set the navbar to fixed position */
     top: 0; /* Position the navbar at the top of the page */
     background-color: black;
@@ -35,6 +36,7 @@ background-color: transparent;
 }
 
 .inputFormNavbar{
+    font-size: 2vw;
     position:relative;
     height: 50%;
     flex:1;
@@ -42,6 +44,7 @@ background-color: transparent;
     text-align: left;
     background-color: rgb(29, 30, 32);
     color:#8894a0;
+    resize:vertical;
 }
 
 .inputFormNavbar:focus{

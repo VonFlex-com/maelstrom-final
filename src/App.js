@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect,cloneElement } from 'react';
 import {db} from './firebase-config';
 import {
   collection, 
@@ -10,6 +10,7 @@ import {
   deleteDoc,
   query,
   orderBy,
+  where,
   getDoc,
 } from "firebase/firestore";
 import PostList from "./components/PostList";
@@ -38,8 +39,23 @@ function App() {
   const [newDescr, setNewDescr] = useState("");
   const [newRating, setNewRating] = useState(0);
   const [newPoster, setNewPoster] = useState("");
+  //const [newTime, setNewTime] = useState("");
+  //const [newColor, setNewColor] = useState('');
+  //const [newGenre, setNewGenre] = useState("");
 
   const [editId, setEditId] = useState(0);
+
+  /*
+  const colorIndex = [
+    { id: 'MEGSNWeLIbXI2RG2ji7vf4pGGzo2', color: '#333943', name: 'admin'},
+    { id: 'amdnNVoCnFg21MZtQbWvikH9Q0r2', color: '#334341', name: 'thib'},
+    { id: 'bug3wGxTNKMeVrgiF58hcz9vZBn1', color: '#334336', name: 'gael'},
+    { id: '26VXYlcNZ0PR2TroSTj4kpcsEZc2', color: '#334336', name: 'fausto'},
+    { id: 'JuTO8hC1k1X4F4G9FRN4YM44XDd2', color: '#334336', name: 'mila'},
+  ];
+  */
+
+  //const [colIndexes, setcolIndexes] = useState(colorIndex);
 
   const [movies, setMovies] = useState([]);
   const moviesColectionRef = collection(db, "movies");
@@ -49,22 +65,27 @@ function App() {
   //Overlay form boolean
   const [isOpen, setIsOpen] = useState(false);
 
-  const [isAlphabetical, setIsAlphabetical] = useState(false);
+  //const [isAlphabetical, setIsAlphabetical] = useState(false);
   //console.log("First Alphabetical is = "+isAlphabetical);
 
   const [isUpdating, setIsUpdating] = useState(false);
 
   //Get all the list to render
   const getMovies = async() => {
+    const data = await getDocs(query(moviesColectionRef, orderBy("title")));
+      setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
     //toggleIsAlphabetical(!isAlphabetical);
     //console.log("Alphabetical is = "+isAlphabetical);
+    /*
     if(isAlphabetical){
+   // const data = await getDocs(query(moviesColectionRef, orderBy("title")));
     const data = await getDocs(query(moviesColectionRef, orderBy("title")));
-    setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+      setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
     }else{
       const data = await getDocs(query(moviesColectionRef, orderBy("rating", "desc")));
       setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
     }
+    */
   }
 
   /*
@@ -76,8 +97,6 @@ function App() {
     //const movuDoc = doc(db, "users", 0);
   }
   */
-
-  //getUserColor();
 
   //first letter capital for Title
   function capitalize(s)
@@ -205,17 +224,94 @@ function App() {
     return false;
   }
 
+/*
   //toggle list order
   const toggleIsAlphabetical = () =>
   {
     setIsAlphabetical(!isAlphabetical);
     //getUserColor();
     
+    if(user!==null){
+    colIndexes.map(item => {
+      if (item.id === user.uid) {
+        setNewColor(item.color);
+        console.log('user color = '+item.color+', name = '+item.name);
+        return;
+      } else {
+        console.log('no user uid');
+        return;
+      }
+    })
+  }else{
+    console.log('no user');
+  }
+  
     //console.log(userColor[0].id);
     //console.log(user.uid);
     //console.log("in toggle Alphabetical is = "+isAlphabetical);
     getMovies();
   }
+*/
+
+  const handleMenuOne = async () => {
+    console.log('clicked alphabet');
+    const data = await getDocs(query(moviesColectionRef, orderBy("title")));
+    setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+  };
+
+  const handleMenuTwo = async () => {
+    console.log('clicked rating');
+    const data = await getDocs(query(moviesColectionRef, orderBy("rating", "desc")));
+    setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+  };
+
+  const handleMenuThree = async () => {
+    console.log('clicked new');
+    const data = await getDocs(query(moviesColectionRef,where("time",'==','new')));
+    setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+  };
+
+  const handleMenuFour = async () => {
+    console.log('clicked recent');
+    const data = await getDocs(query(moviesColectionRef,where("time",'==','recent')));
+    setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+  };
+
+  const handleMenuFive = async () => {
+    console.log('clicked classic');
+    const data = await getDocs(query(moviesColectionRef,where("time",'==','classic')));
+    setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+  };
+
+  const Dropdown = ({ trigger, menu }) => {
+    const [open, setOpen] = useState(false);
+  
+    const handleOpen = () => {
+      setOpen(!open);
+    };
+  
+    return (
+      <div className="dropdown">
+        {cloneElement(trigger, {
+          onClick: handleOpen,
+        })}
+        {open ? (
+          <ul className="menu">
+            {menu.map((menuItem, index) => (
+              <li key={index} className="menu-item">
+                {cloneElement(menuItem, {
+                  onClick: () => {
+                    menuItem.props.onClick();
+                    setOpen(false);
+                  },
+                })}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    );
+  };
 
   return (
     <div className="App">
@@ -227,7 +323,16 @@ function App() {
       <div id="topButElem2">
       <a className="discord" title='discord link' href="https://discord.com/channels/1112292195207217233/1112292196943663158">Discord server</a>
       </div>
-      <button id="topButElem2" className="showButton" onClick={toggleIsAlphabetical}>{isAlphabetical?"SORT ALPHABETICALY":"SORT BY RATING"}</button>
+      <Dropdown
+      trigger={<button>ORDER BY</button>}
+      menu={[
+        <button onClick={handleMenuOne}>Alphabetical</button>,
+        <button onClick={handleMenuTwo}>Rating</button>,
+        <button onClick={handleMenuThree}>New</button>,
+        <button onClick={handleMenuFour}>Recent</button>,
+        <button onClick={handleMenuFive}>Classic</button>,
+      ]}
+      />
       </div>
         <Overlay isOpen={isOpen} onClose={toggleOverlay}>
           <div className="todoForm">
@@ -288,8 +393,6 @@ function App() {
 
       <PostList
         movies={movies}
-        //color={userColor[0].color}
-        //style={{backgroundColor : {color}}}
         getMovie={getMovie}
         deleteMovie={deleteMovie}
         handlePoster={handlePoster}
