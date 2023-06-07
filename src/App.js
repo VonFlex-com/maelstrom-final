@@ -1,10 +1,12 @@
 import './App.css';
 import { useState, useEffect,cloneElement } from 'react';
 import {db} from './firebase-config';
+//import {useCollectionData} from 'react-firebase-hooks/firestore';
 import {
   collection, 
   getDocs, 
-  addDoc, 
+  addDoc,
+  setDoc,
   updateDoc, 
   doc, 
   deleteDoc,
@@ -18,6 +20,14 @@ import Overlay from "./components/Overlay";
 import NavBar from "./components/NavBar";
 import {auth} from "./firebase-config";
 import {onAuthStateChanged} from "firebase/auth";
+
+const colorIndex = [
+  { id: 'MEGSNWeLIbXI2RG2ji7vf4pGGzo2', color: '#333943', name: 'Mark'},
+  { id: 'amdnNVoCnFg21MZtQbWvikH9Q0r2', color: '#334341', name: 'Thibaut'},
+  { id: 'bug3wGxTNKMeVrgiF58hcz9vZBn1', color: '#334336', name: 'Gael'},
+  { id: '26VXYlcNZ0PR2TroSTj4kpcsEZc2', color: '#1a1a00', name: 'Fausto'},
+  { id: 'JuTO8hC1k1X4F4G9FRN4YM44XDd2', color: '#660033', name: 'Mila'},
+];
 
 function App() {
 
@@ -37,7 +47,7 @@ function App() {
 
   const [newTitle, setNewTitle] = useState("");
   const [newDescr, setNewDescr] = useState("");
-  const [newRating, setNewRating] = useState(0);
+  const [newRating, setNewRating] = useState(1);
   const [newPoster, setNewPoster] = useState("");
   const [newTime, setNewTime] = useState("new");
   const [newColor, setNewColor] = useState('');
@@ -45,15 +55,7 @@ function App() {
 
   const [editId, setEditId] = useState(0);
 
-  const [currentRadioValue, setCurrentValue] = useState('new');
-
-  const colorIndex = [
-    { id: 'MEGSNWeLIbXI2RG2ji7vf4pGGzo2', color: '#333943', name: 'Mark'},
-    { id: 'amdnNVoCnFg21MZtQbWvikH9Q0r2', color: '#334341', name: 'Thibaut'},
-    { id: 'bug3wGxTNKMeVrgiF58hcz9vZBn1', color: '#334336', name: 'Gael'},
-    { id: '26VXYlcNZ0PR2TroSTj4kpcsEZc2', color: '#1a1a00', name: 'Fausto'},
-    { id: 'JuTO8hC1k1X4F4G9FRN4YM44XDd2', color: '#660033', name: 'Mila'},
-  ];
+  //const [currentRadioValue, setCurrentValue] = useState('new');
 
   const [colIndexes, setcolIndexes] = useState(colorIndex);
 
@@ -73,15 +75,6 @@ function App() {
       setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   }
 
-  /*
-  const getUserColor = async() => {
-    const data = await getDocs(query(usersCollection));
-    setUserColor(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
-
-    //console.log("user ID = "+userColor[0].id+"users color data "+ userColor[0].color);
-    //const movuDoc = doc(db, "users", 0);
-  }
-  */
   const  Getdata = () =>{
     if(user!==null){
       colIndexes.map(item => {
@@ -113,7 +106,7 @@ function App() {
   //Movie creation and update
   const createMovie = async() => {
     if(isUpdating === false){
-    let titleWork = capitalize(newTitle);
+    let titleWork = capitalize(newTitle).trim();
  
     /*
     if(!user){
@@ -123,7 +116,12 @@ function App() {
    console.log('color = '+color);
     }
     */
-    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(1), poster: newPoster, uid: user.uid, color:newColor, time:newTime})
+    if(user===null){
+      alert(warningLog);
+      return;
+    }
+    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime})
+    //moviesColectionRef.collection('voters').doc(user.uid);
     getMovies();
     setIsOpen(!isOpen);
         //reset fields
@@ -151,10 +149,6 @@ function App() {
 
   //Increase by 1 rating
   const updateRating = async(id,rating) => {
-    if(user===null){
-      alert(warningLog);
-      return;
-    }
     const movieDoc = doc(db, "movies", id)
     //console.log(movieDoc.title);
     const newFields = {rating: rating+1};
@@ -162,6 +156,57 @@ function App() {
     getMovies();
   };
   
+  //updtqe rqting nez
+  const updateRatingVoter = async(movieId, rating) => {
+    if(user===null){
+      alert(warningLog);
+      return;
+    }
+    const userIDD = user.uid;
+
+    const data = await getDoc(doc(db,'movies/'+movieId+'/voters',userIDD));
+
+    if (data.exists()) {
+      //console.log('----------'+data.id+", Uid "+userIDD);
+      alert("You already voted");
+    }
+    else {
+      updateRatingWriteVoter(movieId, userIDD, rating);
+      //console.log("New voter")
+    }
+    /*
+    const data = await getDocs(collection(db, 'movies/'+movieId+'/voters'));
+    data.docs.map((doc)=>(
+      doc.id === userIDD
+    //doc.id === user.uid
+    ? console.log("matching user uid "+doc.id+" with userID "+userIDD+", in movie "+movieId+" voters, a deja vote !!! return")
+    : updateRatingWriteVoter(movieId, userIDD, rating),
+      console.log('done updating movie with ID '+movieId+' voters field with user ID '+userIDD)
+    ));
+    */
+  }
+
+  const updateRatingWriteVoter =  async(movieId,userID,rating) =>{
+    //writing userid in voters movie list
+    const voters = doc(db, 'movies/'+movieId+'/voters', userID);
+    const data = {};
+    setDoc(voters, data)
+    .then(voters => {
+   // console.log("updated setdoc with id = "+userID);
+    })
+    .catch(error => {
+    console.log(error);
+    })
+    //------------uppdate rating
+    updateRating(movieId, rating);
+    /*
+    const movieDoc = doc(db, "movies", movieId);
+    //console.log(movieDoc.title);
+    const newFields = {rating: rating+1};
+    await updateDoc(movieDoc, newFields);
+    getMovies();
+    */
+  }
 
   //Handle fields population--------------->
   const handleEdit = async(id) => {
@@ -272,11 +317,53 @@ function App() {
 //console.log('change time '+newTime);
   }
 
+  /*
+  const checkVoters = async(movieId, userID) =>
+  {
+    console.log('Check voters');
+
+    const data = await getDocs(collection(db, 'movies/'+movieId+'/voters'));
+
+    //const data = docS.exists() ? docS.data() : null
+  
+    //if (data === null || data === undefined) return null
+  
+
+
+   
+//const data = await getDocs(collection(db, 'movies/'+movieId+'/voters'));
+
+    data.docs.map((doc)=>(
+    //console.log("Doc exists ? = "+doc.exists()+", doc = "+doc.id)
+    //doc.list.length > 0 && 
+    doc.id === userID
+    //doc.id === user.uid
+    ? console.log("matching user uid "+doc.id+", in movie "+movieId+" voters, a deja vote !!! return")
+    : null
+    
+      ));
+
+//const [docs, loqding, error] = useCollectionData(query);
+    const toCheck = docs?.find(userID);
+    if(toCheck!==null){
+      console.log("no such ID as "+userID);
+      return;
+    }else{
+      console.log("Adding the UID to the voters");
+      //write uid to voters
+      //setNewRating(newRating+=1);
+    }
+  }
+  */
+  
+
   const Dropdown = ({ trigger, menu }) => {
     const [open, setOpen] = useState(false);
   
     const handleOpen = () => {
       setOpen(!open);
+      //checkVoters('0YVeq94stG8sPco4tXv1', 'MEGSNWeLIbXI2RG2ji7vf4pGGzo2');
+      //checkVoters('0YVeq94stG8sPco4tXv1', 'amdnNVoCnFg21MZtQbWvikH9Q0r2');
     };
   
     return (
@@ -398,7 +485,8 @@ function App() {
         getMovie={getMovie}
         deleteMovie={deleteMovie}
         handlePoster={handlePoster}
-        updateRating={updateRating}
+        //updateRating={updateRating}
+        updateRating={updateRatingVoter}
       />
     </div>
     </div>
