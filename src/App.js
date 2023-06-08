@@ -14,6 +14,7 @@ import {
   orderBy,
   where,
   getDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import PostList from "./components/PostList";
 import Overlay from "./components/Overlay";
@@ -27,6 +28,8 @@ const colorIndex = [
   { id: 'bug3wGxTNKMeVrgiF58hcz9vZBn1', color: '#334336', name: 'Gael'},
   { id: '26VXYlcNZ0PR2TroSTj4kpcsEZc2', color: '#1a1a00', name: 'Fausto'},
   { id: 'JuTO8hC1k1X4F4G9FRN4YM44XDd2', color: '#660033', name: 'Mila'},
+  { id: 'MWV2hOiBM1dThcKlHP1EvEfJBjM2', color: '#31221c', name: 'Robert'},
+  { id: 'OBQVOuQRGnbRHWjggwoMG18caEw1', color: '#442244', name: 'Helena'},
 ];
 
 function App() {
@@ -47,7 +50,7 @@ function App() {
 
   const [newTitle, setNewTitle] = useState("");
   const [newDescr, setNewDescr] = useState("");
-  const [newRating, setNewRating] = useState(1);
+  //const [newRating, setNewRating] = useState(1);
   const [newPoster, setNewPoster] = useState("");
   const [newTime, setNewTime] = useState("new");
   const [newColor, setNewColor] = useState('');
@@ -81,8 +84,6 @@ function App() {
         if (item.id === user.uid) {
           setNewColor(item.color);
           setNewPoster(item.name);
-         // console.log("color = "+newColor+', poster = '+newPoster+', time = '+newTime);
-          //console.log('user color = '+item.color+', name = '+item.name);
           return;
         } else {
           return;
@@ -108,20 +109,12 @@ function App() {
     if(isUpdating === false){
     let titleWork = capitalize(newTitle).trim();
  
-    /*
-    if(!user){
-    const userId = user.uid
-    const userInUser = doc(db, "users", userId);
-   const color=userInUser.color;
-   console.log('color = '+color);
-    }
-    */
     if(user===null){
       alert(warningLog);
       return;
     }
-    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime})
-    //moviesColectionRef.collection('voters').doc(user.uid);
+    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime, createdAt:serverTimestamp()})
+
     getMovies();
     setIsOpen(!isOpen);
         //reset fields
@@ -258,11 +251,6 @@ function App() {
 
   //displqy Poster name in alert
   const handlePoster = async (poster) => {
-    /*
-    if(user===null){
-      alert(warningLog);
-      return;
-    }*/
     alert("Posted by " + poster)
   };
 
@@ -289,81 +277,39 @@ function App() {
   };
 
   const handleMenuTwo = async () => {
-   // console.log('clicked rating');
     const data = await getDocs(query(moviesColectionRef, orderBy("rating", "desc")));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
 
   const handleMenuThree = async () => {
-    //console.log('clicked new');
     const data = await getDocs(query(moviesColectionRef,where("time",'==','new')));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
 
   const handleMenuFour = async () => {
-   // console.log('clicked recent');
     const data = await getDocs(query(moviesColectionRef,where("time",'==','recent')));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
 
   const handleMenuFive = async () => {
-    //console.log('clicked classic');
     const data = await getDocs(query(moviesColectionRef,where("time",'==','classic')));
+    setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+  };
+
+  const handleMenuSix = async () => {
+    const data = await getDocs(query(moviesColectionRef,orderBy("createdAt", "desc")));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   };
 
   const onOptionChange = e => {
     setNewTime(e.target.value);
-//console.log('change time '+newTime);
   }
-
-  /*
-  const checkVoters = async(movieId, userID) =>
-  {
-    console.log('Check voters');
-
-    const data = await getDocs(collection(db, 'movies/'+movieId+'/voters'));
-
-    //const data = docS.exists() ? docS.data() : null
-  
-    //if (data === null || data === undefined) return null
-  
-
-
-   
-//const data = await getDocs(collection(db, 'movies/'+movieId+'/voters'));
-
-    data.docs.map((doc)=>(
-    //console.log("Doc exists ? = "+doc.exists()+", doc = "+doc.id)
-    //doc.list.length > 0 && 
-    doc.id === userID
-    //doc.id === user.uid
-    ? console.log("matching user uid "+doc.id+", in movie "+movieId+" voters, a deja vote !!! return")
-    : null
-    
-      ));
-
-//const [docs, loqding, error] = useCollectionData(query);
-    const toCheck = docs?.find(userID);
-    if(toCheck!==null){
-      console.log("no such ID as "+userID);
-      return;
-    }else{
-      console.log("Adding the UID to the voters");
-      //write uid to voters
-      //setNewRating(newRating+=1);
-    }
-  }
-  */
-  
 
   const Dropdown = ({ trigger, menu }) => {
     const [open, setOpen] = useState(false);
   
     const handleOpen = () => {
       setOpen(!open);
-      //checkVoters('0YVeq94stG8sPco4tXv1', 'MEGSNWeLIbXI2RG2ji7vf4pGGzo2');
-      //checkVoters('0YVeq94stG8sPco4tXv1', 'amdnNVoCnFg21MZtQbWvikH9Q0r2');
     };
   
     return (
@@ -404,6 +350,7 @@ function App() {
       menu={[
         <button onClick={handleMenuOne}>Alphabetical</button>,
         <button onClick={handleMenuTwo}>Rating</button>,
+        <button onClick={handleMenuSix}>Time</button>,
         <button onClick={handleMenuThree}>New</button>,
         <button onClick={handleMenuFour}>Recent</button>,
         <button onClick={handleMenuFive}>Classic</button>,
