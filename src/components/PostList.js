@@ -1,4 +1,5 @@
 import React from "react";
+import noImg from "../assets/no-picture-available.png"
 
 const PostList = ({ movies, deleteMovie, getMovie, handlePoster, updateRating }) => {
   return (
@@ -17,8 +18,8 @@ const PostList = ({ movies, deleteMovie, getMovie, handlePoster, updateRating })
         {t.rating}<button className="starButton" onClick={() => updateRating(t.id, t.rating)}></button>
       </span>
       </div>
-      <span className={t.description.lenght>=200?'textDescr':"textDescr"}>
-        {t.description}
+      <span className="textDescr">
+      <img className="imgDesc" src={t.imgUrl?t.imgUrl:{noImg}}/><span className="textDesc">{t.description}</span>
       </span>
       </div>
       <div className="listButtons">

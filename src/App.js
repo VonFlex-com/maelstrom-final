@@ -54,6 +54,7 @@ function App() {
   const [newPoster, setNewPoster] = useState("");
   const [newTime, setNewTime] = useState("new");
   const [newColor, setNewColor] = useState('');
+  const [newImgUrl, setNewImgUrl] = useState('');
   //const [newGenre, setNewGenre] = useState("");
 
   const [editId, setEditId] = useState(0);
@@ -74,7 +75,7 @@ function App() {
 
   //Get all the list to render
   const getMovies = async() => {
-    const data = await getDocs(query(moviesColectionRef, orderBy("title")));
+    const data = await getDocs(query(moviesColectionRef, orderBy("createdAt", "desc")));
       setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   }
 
@@ -113,13 +114,14 @@ function App() {
       alert(warningLog);
       return;
     }
-    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime, createdAt:serverTimestamp()})
+    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime, createdAt:serverTimestamp(), imgUrl: newImgUrl})
 
     getMovies();
     setIsOpen(!isOpen);
         //reset fields
         setNewTitle("");
         setNewDescr("");
+        setNewImgUrl("");
         setNewTime('new');
     }else{
       handleEdit(editId);
@@ -206,12 +208,13 @@ function App() {
     //close overlay
     toggleOverlay();
     const movieDoc = doc(db, "movies", id)
-    const newFields = {title: newTitle, description: newDescr, time:newTime};
+    const newFields = {title: newTitle, description: newDescr, time:newTime, imgUrl: newImgUrl};
     await updateDoc(movieDoc, newFields);
 
     //reset fields
     setNewTitle("");
     setNewDescr("");
+    setNewImgUrl("");
     setNewTime('new');
     //setNewRating(0);
     //setNewPoster("");
@@ -238,12 +241,14 @@ function App() {
    const newTi = data.title;
    const newDesc = data.description;
    const newtim = data.time;
+   const newUrlIMG = data.imgUrl;
    //const newRat = data.rating;
    //const newPost = data.poster;
 
     setNewTitle(newTi);
     setNewDescr(newDesc);
     setNewTime(newtim);
+    setNewImgUrl(newUrlIMG);
     //setNewRating(newRat);
     //setNewPoster(newPost);
   return;
@@ -381,6 +386,19 @@ function App() {
         onChange={(event)=>{
           event.preventDefault();
           setNewDescr(event.target.value);
+        }}
+      />
+      <label className="textLi">IMAGE URL</label>
+      <textarea
+        className="inputForm"
+        rows="5" 
+        cols="10"
+        type="text"
+        value = {newImgUrl}
+        placeholder="Raw URL of the movie poster finishing with .jpg...Put nothing if none" 
+        onChange={(event)=>{
+          event.preventDefault();
+          setNewImgUrl(event.target.value);
         }}
       />
       <label className="textLi">FRESHNESS</label>

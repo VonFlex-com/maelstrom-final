@@ -126,6 +126,32 @@ body{
   border: solid 2px rgb(0, 38, 255);
 }
 
+.imgDesc{
+ /*background-image: url("../src/assets/what.jpg");*/
+  background-size: cover;
+  background-color: #691732;
+  border: 0;
+  border-style: none;
+  flex:1;
+  max-width:50px;
+  height:67px;
+}
+
+.textDesc{
+  background-color: rgb(37, 51, 59);
+  color: rgb(207, 225, 225);
+  height:auto;
+  min-height: 40px;
+  text-align: justify;
+  text-justify: auto;
+  text-indent: 30px;
+  font-size: 0.7em;
+  padding: 0.6em;
+  text-overflow: ellipsis;
+  line-height: 0.9em;
+  flex:1;
+}
+
 .editButton{
   background-image: url("../src/assets/crayon.png");
   background-size: cover;
@@ -310,17 +336,10 @@ button:hover{
 }
 
 .textDescr{
-  background-color: rgb(62, 64, 68);
-  color: rgb(207, 225, 225);
-  height:auto;
-  min-height: 40px;
-  text-align: justify;
-  text-justify: auto;
-  text-indent: 30px;
-  font-size: 0.7em;
-  padding: 0.6em;
-  text-overflow: ellipsis;
-  line-height: 0.9em;
+  display: flex;
+  flex-direction: row;
+  border: none;
+  border-style: none;
 }
 
 .textDescr2
