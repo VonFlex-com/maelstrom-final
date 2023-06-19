@@ -1,9 +1,9 @@
 import './App.css';
 import { useState, useEffect,cloneElement } from 'react';
 import {db} from './firebase-config';
-//import {useCollectionData} from 'react-firebase-hooks/firestore';
+import colorIndex  from './uData';
 import {
-  collection, 
+  collection,
   getDocs, 
   addDoc,
   setDoc,
@@ -15,28 +15,18 @@ import {
   where,
   getDoc,
   serverTimestamp,
+  getCountFromServer,
 } from "firebase/firestore";
 import PostList from "./components/PostList";
 import Overlay from "./components/Overlay";
 import NavBar from "./components/NavBar";
+import CommentsList from "./components/CommentsList";
 import {auth} from "./firebase-config";
 import {onAuthStateChanged} from "firebase/auth";
-
-const colorIndex = [
-  { id: 'MEGSNWeLIbXI2RG2ji7vf4pGGzo2', color: '#333943', name: 'Mark'},
-  { id: 'amdnNVoCnFg21MZtQbWvikH9Q0r2', color: '#334341', name: 'Thibaut'},
-  { id: 'bug3wGxTNKMeVrgiF58hcz9vZBn1', color: '#334336', name: 'Gael'},
-  { id: '26VXYlcNZ0PR2TroSTj4kpcsEZc2', color: '#1a1a00', name: 'Fausto'},
-  { id: 'JuTO8hC1k1X4F4G9FRN4YM44XDd2', color: '#660033', name: 'Mila'},
-  { id: 'MWV2hOiBM1dThcKlHP1EvEfJBjM2', color: '#31221c', name: 'Robert'},
-  { id: 'OBQVOuQRGnbRHWjggwoMG18caEw1', color: '#442244', name: 'Helena'},
-];
 
 function App() {
 
   const [user, setUser] = useState("");
-
- // const [userColor, setUserColor] = useState([]);
 
   useEffect(() => {
       onAuthStateChanged(auth, (currentUser) => {
@@ -44,40 +34,25 @@ function App() {
       });
   }, [])
 
-  //console.log("User from apps "+ user);
-
   let warningLog = "You must be logged in to edit";
 
   const [newTitle, setNewTitle] = useState("");
   const [newDescr, setNewDescr] = useState("");
-  //const [newRating, setNewRating] = useState(1);
   const [newPoster, setNewPoster] = useState("");
   const [newTime, setNewTime] = useState("new");
   const [newColor, setNewColor] = useState('');
   const [newImgUrl, setNewImgUrl] = useState('');
-  //const [newGenre, setNewGenre] = useState("");
 
   const [editId, setEditId] = useState(0);
-
-  //const [currentRadioValue, setCurrentValue] = useState('new');
 
   const [colIndexes, setcolIndexes] = useState(colorIndex);
 
   const [movies, setMovies] = useState([]);
   const moviesColectionRef = collection(db, "movies");
-
-  //const usersCollection = collection(db, "users");
   
   //Overlay form boolean
   const [isOpen, setIsOpen] = useState(false);
-
   const [isUpdating, setIsUpdating] = useState(false);
-
-  //Get all the list to render
-  const getMovies = async() => {
-    const data = await getDocs(query(moviesColectionRef, orderBy("createdAt", "desc")));
-      setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
-  }
 
   const  Getdata = () =>{
     if(user!==null){
@@ -93,6 +68,12 @@ function App() {
     }else{
       return;
     }
+  }
+
+  //Get all the list to render
+  const getMovies = async() => {
+    const data = await getDocs(query(moviesColectionRef, orderBy("createdAt", "desc")));
+      setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   }
 
   //first letter capital for Title
@@ -162,30 +143,18 @@ function App() {
     const data = await getDoc(doc(db,'movies/'+movieId+'/voters',userIDD));
 
     if (data.exists()) {
-      //console.log('----------'+data.id+", Uid "+userIDD);
       alert("You already voted");
     }
     else {
       updateRatingWriteVoter(movieId, userIDD, rating);
-      //console.log("New voter")
     }
-    /*
-    const data = await getDocs(collection(db, 'movies/'+movieId+'/voters'));
-    data.docs.map((doc)=>(
-      doc.id === userIDD
-    //doc.id === user.uid
-    ? console.log("matching user uid "+doc.id+" with userID "+userIDD+", in movie "+movieId+" voters, a deja vote !!! return")
-    : updateRatingWriteVoter(movieId, userIDD, rating),
-      console.log('done updating movie with ID '+movieId+' voters field with user ID '+userIDD)
-    ));
-    */
   }
 
   const updateRatingWriteVoter =  async(movieId,userID,rating) =>{
     //writing userid in voters movie list
     const voters = doc(db, 'movies/'+movieId+'/voters', userID);
     const data = {};
-    setDoc(voters, data)
+    await setDoc(voters, data)
     .then(voters => {
    // console.log("updated setdoc with id = "+userID);
     })
@@ -194,13 +163,6 @@ function App() {
     })
     //------------uppdate rating
     updateRating(movieId, rating);
-    /*
-    const movieDoc = doc(db, "movies", movieId);
-    //console.log(movieDoc.title);
-    const newFields = {rating: rating+1};
-    await updateDoc(movieDoc, newFields);
-    getMovies();
-    */
   }
 
   //Handle fields population--------------->
@@ -211,13 +173,10 @@ function App() {
     const newFields = {title: newTitle, description: newDescr, time:newTime, imgUrl: newImgUrl};
     await updateDoc(movieDoc, newFields);
 
-    //reset fields
     setNewTitle("");
     setNewDescr("");
     setNewImgUrl("");
     setNewTime('new');
-    //setNewRating(0);
-    //setNewPoster("");
     setIsUpdating(!isUpdating);
 
     getMovies();
@@ -242,15 +201,11 @@ function App() {
    const newDesc = data.description;
    const newtim = data.time;
    const newUrlIMG = data.imgUrl;
-   //const newRat = data.rating;
-   //const newPost = data.poster;
 
     setNewTitle(newTi);
     setNewDescr(newDesc);
     setNewTime(newtim);
     setNewImgUrl(newUrlIMG);
-    //setNewRating(newRat);
-    //setNewPoster(newPost);
   return;
   };
 
@@ -276,10 +231,9 @@ function App() {
 
 //----------->Order by options
   const handleMenuOne = async () => {
-   // console.log('clicked alphabet');
     const data = await getDocs(query(moviesColectionRef, orderBy("title")));
     setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
-  };
+  }; 
 
   const handleMenuTwo = async () => {
     const data = await getDocs(query(moviesColectionRef, orderBy("rating", "desc")));
@@ -309,6 +263,38 @@ function App() {
   const onOptionChange = e => {
     setNewTime(e.target.value);
   }
+
+  const [comments, setComments] = useState([]);
+
+  const [tempMovieID, setTempMovieID] = useState('');
+
+  const [openComment, setOpenComment] = useState(false);
+
+  const [newCommentText, setNewCommentText] = useState('');
+
+  const getComments = async(movieId) => {
+    const data = await getDocs(query(collection(db,'movies/'+movieId+'/comments')));
+    setComments(
+      data.docs.sort((a, b) => a.data().id > b.data().id ? 1:-1)
+      .map((doc)=>({...doc.data(), id: doc.id})));
+  }
+
+  const handleComment = async(movieId) => {
+    if(user===null){
+      alert(warningLog);
+      return;
+    }
+    setTempMovieID(movieId);
+    handleOpenComment();
+    getComments(movieId);
+  };
+
+  const handleOpenComment = () => {
+    setOpenComment(!openComment);
+    if(openComment){
+      setComments([]);
+    }
+  };
 
   const Dropdown = ({ trigger, menu }) => {
     const [open, setOpen] = useState(false);
@@ -340,6 +326,28 @@ function App() {
     );
   };
 
+
+   const addNewComment = async(movieId, text) =>
+   {
+const coll = collection(db,'movies/'+movieId+'/comments');
+const snapshot = await getCountFromServer(coll);
+console.log('count: ', snapshot.data().count);
+
+//-----------------> WRITING NEW COMMENT
+
+      await addDoc(collection(db, 'movies/'+movieId+'/comments'), {
+      id: snapshot.data().count,
+      user: user.uid,
+      text: text,
+      date: serverTimestamp(),
+    });
+
+  //RESET THE FIELDS
+    setNewCommentText('');
+    setTempMovieID('');
+    setComments([]);
+  }
+
   return (
     <div className="App">
       <div className="container">
@@ -350,6 +358,7 @@ function App() {
       <div id="topButElem2">
       <a className="discord" title='discord link' href="https://discord.com/channels/1112292195207217233/1112292196943663158">Discord server</a>
       </div>
+     
       <Dropdown
       trigger={<button>ORDER BY</button>}
       menu={[
@@ -361,7 +370,54 @@ function App() {
         <button onClick={handleMenuFive}>Classic</button>,
       ]}
       />
+  
+
+      <Overlay isOpen={openComment} onClose={handleOpenComment}>
+     
+      <div className="comment_background">
+        <ul className="comment_container">
+<li className="liCommentElemButton">
+        <button
+          className="closeButton"
+          type="button"
+          onClick={handleOpenComment}
+        >X</button>
+   </li>
+        <CommentsList comments={comments}/>
+      
+<label className="textLi">ADD A COMMENT...</label>
+      <textarea
+        className="inputForm"
+        rows="3" 
+        cols="20"
+        type="text"
+        value = {newCommentText}
+        placeholder="Comment here..." 
+        onChange={(event)=>{
+          event.preventDefault();
+          setNewCommentText(event.target.value);
+        }}
+      />
+        <button
+          className="showButton"
+          type="button"
+          onClick={() => {addNewComment(tempMovieID, newCommentText)
+            handleOpenComment()}}
+        >SUBMIT</button>
+
+<li className='liCommentElemButton'>
+        <button
+          className="closeButton"
+          type="button"
+          onClick={handleOpenComment}
+        >X</button>
+   </li>
+        </ul>
+        </div>
+      </Overlay>
       </div>
+
+      
         <Overlay isOpen={isOpen} onClose={toggleOverlay}>
           <div className="todoForm">
       <label className="textLi">FILM TITLE</label>
@@ -445,13 +501,15 @@ function App() {
     </div>
         </Overlay>
 
+        
       <PostList
         movies={movies}
+        //getBoolComment = {getBoolComment}
         getMovie={getMovie}
         deleteMovie={deleteMovie}
         handlePoster={handlePoster}
-        //updateRating={updateRating}
         updateRating={updateRatingVoter}
+        handleComment={handleComment}
       />
     </div>
     </div>

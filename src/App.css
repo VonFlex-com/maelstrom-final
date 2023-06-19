@@ -170,6 +170,122 @@ body{
   background-color: rgb(86, 201, 9);
 }
 
+/*-------------COMMENT----------------*/
+.comment_background{
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 9;
+  list-style-type: none;
+}
+
+.comment_container {
+  background-color: rgb(57, 57, 59);
+  position: fixed;
+  max-width: 50%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: 20;
+  padding: 20px;
+  width: fit-content;
+  height: fit-content;
+  max-height: 60%;
+  overflow-y: scroll;
+  list-style-type: none;
+}
+
+.liCommentElem{
+  display: flex;
+  flex-direction: row;
+  background-color: rgb(130, 138, 139);
+  border-radius: 10px;
+  margin: .3em;
+}
+
+.liCommentElemButton{
+  display: flex;
+  flex-direction: row-reverse;
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.textComment{
+  flex:1;
+  padding-left: 1em;
+  padding-right: 1em;
+  color: rgb(16, 22, 22);
+  text-align: justify;
+  text-justify: auto;
+  text-indent: 10px;
+  font-size: 1em;
+  text-overflow: ellipsis;
+}
+
+.commentButton{
+  background-image: url("../src/assets/dialog.png");
+  background-size: cover;
+  background-color: rgb(168, 14, 86);
+  border: #3d0427 solid 1px;
+  height:2.7vh;
+  flex:.24;
+  color:rgb(143, 50, 123);
+}
+
+.commentButton:hover{
+  background-color: rgb(255, 17, 156);
+}
+
+.noCommentButton{
+  background-image: url("../src/assets/dialog.png");
+  background-size: cover;
+  background-color: rgb(39, 17, 99);
+  height:2.7vh;
+  flex:.3;
+  font-weight: 900;
+  font-size: 1.8vh;
+  color:rgb(11, 15, 39);
+}
+
+.iconeComment{
+  background-image: url("../src/assets/dialog.png");
+  background-size: cover;
+  background-color: rgb(118, 101, 196);
+  height: 6vh;
+  min-height: 2vh;
+  color:black;
+  font-weight: 800;
+  min-width: 6vw;
+  max-width: 6vw;
+  flex:1;
+  border-radius: 0 10px 10px 0;
+}
+
+.closeButton{
+  list-style: none;
+  flex:.05 5px;
+  border: none;
+  background-color: grey;
+  font-size: 20px;
+  color:white;
+  cursor: pointer;
+  float:right;
+  width:10%;
+}
+
+.closeButton:hover{
+  display: inline-block;
+  background-color: rgb(182, 63, 63);
+  content: "\00d7";
+  border:none;
+}
+
 .starButton{
   background-image: url("../src/assets/checkbox.png");
   background-size: cover;

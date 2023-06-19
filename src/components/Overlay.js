@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import "./Overlay.css";
 
-export function Overlay({ isOpen, onClose, children }) {
+export function Overlay({ isOpen, onClose, children}) {
     return (
       <Fragment>
         {isOpen && (
