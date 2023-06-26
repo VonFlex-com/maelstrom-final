@@ -11,7 +11,7 @@ const PostList = ({ movies, deleteMovie, getMovie, handlePoster, updateRating, h
       <span className="textTitle" style={{backgroundColor :t.color}}>
         {t.title}
       </span>
-      <button className="commentButton" onClick={() => handleComment(t.id)}/>
+      <button className={t.com===0?"noCommentButton":"commentButton"} onClick={() => handleComment(t.id)}>{t.com===0?'\u00A0':t.com}</button>
       <span className={t.time==='new'?"textTime":t.time==='recent'?"textTime2":"textTime3"}>
         {t.time}
       </span>

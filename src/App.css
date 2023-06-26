@@ -228,34 +228,44 @@ body{
   text-overflow: ellipsis;
 }
 
+.noCommentButton{
+  background-image: url("../src/assets/dialogOff.png");
+  background-size: cover;
+  background-color: rgb(110, 88, 99);
+  border: #5f515a solid 1px;
+  width:30px;
+  height: 30px;
+  flex:.24;
+  color:rgb(128, 113, 125);
+}
+
+.noCommentButton:hover{
+  background-color: rgb(17, 160, 255);
+  border: rgb(17, 160, 255) solid 1px;
+  color:rgb(17, 160, 255);
+}
+
 .commentButton{
   background-image: url("../src/assets/dialog.png");
   background-size: cover;
-  background-color: rgb(168, 14, 86);
-  border: #3d0427 solid 1px;
-  height:2.7vh;
+  background-color: #79132c;
+  border: #79132c solid 1px;
+  width:30px;
+  height: 30px;
   flex:.24;
-  color:rgb(143, 50, 123);
+  font-size: 2vh;
+  font-weight: bold;
+  color:rgb(124, 28, 49);
 }
 
 .commentButton:hover{
-  background-color: rgb(255, 17, 156);
-}
-
-.noCommentButton{
-  background-image: url("../src/assets/dialog.png");
-  background-size: cover;
-  background-color: rgb(39, 17, 99);
-  height:2.7vh;
-  flex:.3;
-  font-weight: 900;
-  font-size: 1.8vh;
-  color:rgb(11, 15, 39);
+  background-color: #c90d3c;
+  border: #c90d3c solid 1px;
+  color: #c90d3c;
 }
 
 .iconeComment{
-  background-image: url("../src/assets/dialog.png");
-  background-size: cover;
+
   background-color: rgb(118, 101, 196);
   height: 6vh;
   min-height: 2vh;

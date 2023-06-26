@@ -8,7 +8,7 @@ import {
   addDoc,
   setDoc,
   updateDoc, 
-  doc, 
+  doc,
   deleteDoc,
   query,
   orderBy,
@@ -32,6 +32,7 @@ function App() {
       onAuthStateChanged(auth, (currentUser) => {
           setUser(currentUser);
       });
+      getMovies();
   }, [])
 
   let warningLog = "You must be logged in to edit";
@@ -73,7 +74,7 @@ function App() {
   //Get all the list to render
   const getMovies = async() => {
     const data = await getDocs(query(moviesColectionRef, orderBy("createdAt", "desc")));
-      setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
+    setMovies(data.docs.map((doc)=>({...doc.data(), id: doc.id})));
   }
 
   //first letter capital for Title
@@ -81,10 +82,6 @@ function App() {
   {
       return s && s[0].toUpperCase() + s.slice(1);
   }
-
-  useEffect(() =>{
-    getMovies();
-  }, [])
 
   //Movie creation and update
   const createMovie = async() => {
@@ -95,7 +92,7 @@ function App() {
       alert(warningLog);
       return;
     }
-    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime, createdAt:serverTimestamp(), imgUrl: newImgUrl})
+    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime, createdAt:serverTimestamp(), imgUrl: newImgUrl, com:0})
 
     getMovies();
     setIsOpen(!isOpen);
@@ -211,7 +208,7 @@ function App() {
 
   //displqy Poster name in alert
   const handlePoster = async (poster) => {
-    alert("Posted by " + poster)
+    alert("Posted by " + poster);
   };
 
   //toggle Overlay
@@ -293,6 +290,7 @@ function App() {
     setOpenComment(!openComment);
     if(openComment){
       setComments([]);
+      getMovies();
     }
   };
 
@@ -326,17 +324,27 @@ function App() {
     );
   };
 
+  const addCommentNumber = async (movID, num) => {
+    const movieDoc = doc(db, "movies", movID)
+    const newFields = {com: num};
+    await updateDoc(movieDoc, newFields);
+  }
 
-   const addNewComment = async(movieId, text) =>
-   {
-const coll = collection(db,'movies/'+movieId+'/comments');
-const snapshot = await getCountFromServer(coll);
-console.log('count: ', snapshot.data().count);
+  const addNewComment = async(movieId, text) =>
+  {
+    const coll = collection(db,'movies/'+movieId+'/comments');
+    const snapshot = await getCountFromServer(coll);
+
+    let countC = snapshot.data().count;
+
+    //console.log('count: ', countC);
+
+    addCommentNumber(movieId, countC+1);
 
 //-----------------> WRITING NEW COMMENT
 
       await addDoc(collection(db, 'movies/'+movieId+'/comments'), {
-      id: snapshot.data().count,
+      id: countC,
       user: user.uid,
       text: text,
       date: serverTimestamp(),
@@ -500,11 +508,8 @@ console.log('count: ', snapshot.data().count);
       </div>
     </div>
         </Overlay>
-
-        
       <PostList
         movies={movies}
-        //getBoolComment = {getBoolComment}
         getMovie={getMovie}
         deleteMovie={deleteMovie}
         handlePoster={handlePoster}

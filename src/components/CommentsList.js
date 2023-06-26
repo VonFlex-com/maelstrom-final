@@ -10,7 +10,7 @@ for (let i = 0; i < comments.length; i++) {
     for (let j = 0; j < colorIndex.length; j++) {
         if(comments[i].user === colorIndex[j].id){
   rows.push(<li key={i} className="liCommentElem">
-  <p className="iconeComment" style={{backgroundColor :colorIndex[j].color, color :colorIndex[j].color}}>{colorIndex[j].name.charAt(0)}</p>
+  <p className="iconeComment" style={{backgroundColor :colorIndex[j].color, color :"#fff"}}>{colorIndex[j].name.charAt(0)}</p>
   <p className="textComment">{comments[i].text}</p>
   </li>);
         }
