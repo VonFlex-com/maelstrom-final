@@ -1,7 +1,6 @@
-import React from "react";
 import noImg from "../assets/no-picture-available.png";
 
-const PostList = ({ movies, deleteMovie, getMovie, handlePoster, updateRating, handleComment }) => {
+const PostList = ({ movies, userCred, deleteMovie, getMovie, handlePoster, updateRating, handleComment }) => {
   return (
     <ul className="ulElem">
       {movies.map((t) => (
@@ -15,7 +14,6 @@ const PostList = ({ movies, deleteMovie, getMovie, handlePoster, updateRating, h
       <span className={t.time==='new'?"textTime":t.time==='recent'?"textTime2":"textTime3"}>
         {t.time}
       </span>
-      
       <span className="textRatingH">
         {t.rating}<button className="starButton" onClick={() => updateRating(t.id, t.rating)}></button>
       </span>
@@ -27,8 +25,8 @@ const PostList = ({ movies, deleteMovie, getMovie, handlePoster, updateRating, h
       
       <div className="listButtons">
       <button className="whoButton" onClick={() => handlePoster(t.poster)}></button>
-      <button className="editButton" onClick={() => getMovie(t.id)}></button>
-      <button className="deleteButton" onClick={() => deleteMovie(t.id)}></button>
+      <button className={t.uid.valueOf() === userCred?"editButton":"editNOButton"} onClick={() => getMovie(t.id, t.uid.valueOf())}></button>
+      <button className={t.uid.valueOf() === userCred?"deleteButton":"deleteNOButton"}  onClick={() => deleteMovie(t.id, t.uid.valueOf())}></button>
       </div>
 </li>
       ))}

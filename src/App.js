@@ -110,14 +110,18 @@ function App() {
   };
 
   //Delete entry
-  const deleteMovie = async(id) =>{
+  const deleteMovie = async(id, uid) =>{
     if(user===null){
       alert(warningLog);
       return;
-    }
+    }else if(uid !== user.uid){
+      alert('Cannot delete other users post');
+      return;
+    }else{
     const movDoc = doc(db, "movies", id);
     await deleteDoc(movDoc);
     getMovies();
+    }
   };
 
   //Increase by 1 rating
@@ -179,11 +183,14 @@ function App() {
     getMovies();
   };
 
-  const getMovie = async(id) => {
+  const getMovie = async(id, uid) => {
     if(user===null){
       alert(warningLog);
       return;
-    }
+    }else if(uid !== user.uid){
+      alert('Cannot edit other users post');
+      return;
+    }else{
     setIsUpdating(true);
     toggleOverlay();
     setEditId(id);
@@ -204,6 +211,7 @@ function App() {
     setNewTime(newtim);
     setNewImgUrl(newUrlIMG);
   return;
+    }
   };
 
   //displqy Poster name in alert
@@ -277,13 +285,28 @@ function App() {
   }
 
   const handleComment = async(movieId) => {
+    
     if(user===null){
-      alert(warningLog);
-      return;
+      const movieDoc = doc(db, "movies", movieId)
+      const docSnap = await getDoc(movieDoc)
+  
+      const data = docSnap.exists() ? docSnap.data() : null
+    
+      if (data === null || data === undefined) return null
+
+      if(data.com === 0){
+      //console.log("Commentaire "+data.com);
+      alert("No comment yet");
+      }else{
+        setTempMovieID(movieId);
+        handleOpenComment();
+        getComments(movieId);
+      }
+    }else{
+      setTempMovieID(movieId);
+      handleOpenComment();
+      getComments(movieId);
     }
-    setTempMovieID(movieId);
-    handleOpenComment();
-    getComments(movieId);
   };
 
   const handleOpenComment = () => {
@@ -363,9 +386,7 @@ function App() {
       <div className='navBarUnder'></div>
       <div className="topButton">
       <button id="topButElem1" disabled = {user===null} className="showButton" onClick={toggleOverlay}>{user===null?"MUST BE LOGGED IN TO POST":"ADD NEW ENTRY"}</button>
-      <div id="topButElem2">
-      <a className="discord" title='discord link' href="https://discord.com/channels/1112292195207217233/1112292196943663158">Discord server</a>
-      </div>
+
      
       <Dropdown
       trigger={<button>ORDER BY</button>}
@@ -393,7 +414,9 @@ function App() {
    </li>
         <CommentsList comments={comments}/>
       
-<label className="textLi">ADD A COMMENT...</label>
+        {user!==null &&
+        <>
+        <label className="textLi">ADD A COMMENT...</label>
       <textarea
         className="inputForm"
         rows="3" 
@@ -412,6 +435,8 @@ function App() {
           onClick={() => {addNewComment(tempMovieID, newCommentText)
             handleOpenComment()}}
         >SUBMIT</button>
+
+</>}
 
 <li className='liCommentElemButton'>
         <button
@@ -510,6 +535,7 @@ function App() {
         </Overlay>
       <PostList
         movies={movies}
+        userCred={user!==null?user.uid:0}
         getMovie={getMovie}
         deleteMovie={deleteMovie}
         handlePoster={handlePoster}

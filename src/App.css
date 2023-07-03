@@ -155,7 +155,22 @@ body{
 .editButton{
   background-image: url("../src/assets/crayon.png");
   background-size: cover;
-  background-color: rgb(14, 152, 170);
+  background-color: #0e98aa;
+}
+
+.editNOButton{
+  background-image: url("../src/assets/crayon.png");
+  background-size: cover;
+  background-color: #6a7274;
+}
+
+.editNOButton:hover{
+  border: solid 2px transparent;
+  border-radius: 5px;
+  padding: 6px;
+  flex:1 10px;
+  margin: 2px;
+  background-color: #525f63;
 }
 
 .deleteButton{
@@ -164,10 +179,30 @@ body{
   background-color: rgb(201, 9, 51);
 }
 
+.deleteNOButton{
+  background-image: url("../src/assets/croix.png");
+  background-size: cover;
+  background-color: #6a7274;
+}
+
+.deleteNOButton:hover{
+  border: solid 2px transparent;
+  border-radius: 5px;
+  padding: 6px;
+  flex:1 10px;
+  margin: 2px;
+  background-color: #525f63;
+}
+
 .whoButton{
   background-image: url("../src/assets/nom.png");
   background-size: cover;
-  background-color: rgb(86, 201, 9);
+  background-color: rgb(21, 158, 44);
+}
+
+.whoButton:hover{
+  background-color: rgb(64, 207, 21);
+  border: solid 2px rgb(188, 255, 32);
 }
 
 /*-------------COMMENT----------------*/
@@ -240,7 +275,7 @@ body{
 }
 
 .noCommentButton:hover{
-  background-color: rgb(17, 160, 255);
+  background-color: rgb(17, 100, 255);
   border: rgb(17, 160, 255) solid 1px;
   color:rgb(17, 160, 255);
 }
@@ -337,7 +372,7 @@ button{
 }
 
 button:hover{
-  background-color: rgb(193, 32, 208);
+  background-color: rgb(173, 36, 144);
   border: solid 2px rgb(221, 103, 34);
 }
 
