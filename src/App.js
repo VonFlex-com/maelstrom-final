@@ -23,6 +23,7 @@ import NavBar from "./components/NavBar";
 import CommentsList from "./components/CommentsList";
 import {auth} from "./firebase-config";
 import {onAuthStateChanged} from "firebase/auth";
+import ReactGa from 'react-ga';
 
 function App() {
 
@@ -33,6 +34,8 @@ function App() {
           setUser(currentUser);
       });
       getMovies();
+      ReactGa.initialize('G-FPY7T6ZVNC');
+      ReactGa.pageview('/');
   }, [])
 
   let warningLog = "You must be logged in to edit";
