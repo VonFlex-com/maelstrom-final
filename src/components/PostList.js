@@ -1,6 +1,6 @@
 import noImg from "../assets/no-picture-available.png";
 
-const PostList = ({ movies, userCred, deleteMovie, getMovie, handlePoster, updateRating, handleComment }) => {
+const PostList = ({ movies, userCred, deleteMovie, getMovie, handlePoster, handleLink,updateRating, handleComment }) => {
   return (
     <ul className="ulElem">
       {movies.map((t) => (
@@ -10,6 +10,7 @@ const PostList = ({ movies, userCred, deleteMovie, getMovie, handlePoster, updat
       <span className="textTitle" style={{backgroundColor :t.color}}>
         {t.title}
       </span>
+      <button className={t.link?"linkButton":"nolinkButton"} onClick={() => handleLink(t.link)}></button>
       <button className={t.com===0?"noCommentButton":"commentButton"} onClick={() => handleComment(t.id)}>{t.com===0?'\u00A0':t.com}</button>
       <span className={t.time==='new'?"textTime":t.time==='recent'?"textTime2":"textTime3"}>
         {t.time}

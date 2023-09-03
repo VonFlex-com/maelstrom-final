@@ -205,6 +205,32 @@ body{
   border: solid 2px rgb(188, 255, 32);
 }
 
+.linkButton{
+  background-image: url("../src/assets/link.png");
+  background-size: cover;
+  background-color: rgb(79, 7, 214);
+  flex:0.2 10px;
+  border: solid 2px rgb(79, 7, 214);
+}
+
+.linkButton:hover{
+  background-color: rgb(128, 49, 255);
+  border: solid 2px rgb(255, 32, 244);
+}
+
+.nolinkButton{
+  background-image: url("../src/assets/link.png");
+  background-size: cover;
+  background-color: rgb(128, 124, 134);
+  flex:0.2 10px;
+  border: solid 2px rgb(128, 124, 134);
+}
+
+.nolinkButton:hover{
+  background-color: rgb(128, 124, 134);
+  border: solid 2px rgb(128, 124, 134);
+}
+
 /*-------------COMMENT----------------*/
 .comment_background{
   background-color: rgba(0, 0, 0, 0.5);
@@ -338,6 +364,7 @@ body{
   height: 22px;
   float: right;
   background-color: rgb(33, 38, 68);
+  border: solid 2px rgb(33, 38, 68);
 }
 
 .starButton:hover{

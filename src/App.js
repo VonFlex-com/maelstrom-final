@@ -46,6 +46,7 @@ function App() {
   const [newTime, setNewTime] = useState("new");
   const [newColor, setNewColor] = useState('');
   const [newImgUrl, setNewImgUrl] = useState('');
+  const [newLinkUrl, setNewLinkUrl] = useState('');
 
   const [editId, setEditId] = useState(0);
 
@@ -95,7 +96,7 @@ function App() {
       alert(warningLog);
       return;
     }
-    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime, createdAt:serverTimestamp(), imgUrl: newImgUrl, com:0})
+    await addDoc(moviesColectionRef, {title: titleWork, description: newDescr, rating: Number(0), poster: newPoster, uid: user.uid, color:newColor, time:newTime, createdAt:serverTimestamp(), imgUrl: newImgUrl,link:newLinkUrl, com:0})
 
     getMovies();
     setIsOpen(!isOpen);
@@ -103,6 +104,7 @@ function App() {
         setNewTitle("");
         setNewDescr("");
         setNewImgUrl("");
+        setNewLinkUrl("");
         setNewTime('new');
     }else{
       handleEdit(editId);
@@ -174,12 +176,13 @@ function App() {
     //close overlay
     toggleOverlay();
     const movieDoc = doc(db, "movies", id)
-    const newFields = {title: newTitle, description: newDescr, time:newTime, imgUrl: newImgUrl};
+    const newFields = {title: newTitle, description: newDescr, time:newTime, imgUrl: newImgUrl,link:newLinkUrl};
     await updateDoc(movieDoc, newFields);
 
     setNewTitle("");
     setNewDescr("");
     setNewImgUrl("");
+    setNewLinkUrl("");
     setNewTime('new');
     setIsUpdating(!isUpdating);
 
@@ -208,11 +211,13 @@ function App() {
    const newDesc = data.description;
    const newtim = data.time;
    const newUrlIMG = data.imgUrl;
+   const newUrlLINK = data.link;
 
     setNewTitle(newTi);
     setNewDescr(newDesc);
     setNewTime(newtim);
     setNewImgUrl(newUrlIMG);
+    setNewLinkUrl(newUrlLINK);
   return;
     }
   };
@@ -225,6 +230,20 @@ function App() {
   //toggle Overlay
   const toggleOverlay = () => {
     setIsOpen(!isOpen);
+    setNewTitle("");
+    setNewDescr("");
+    setNewImgUrl("");
+    setNewLinkUrl("");
+    setNewTime('new');
+    //console.log('open = '+isOpen);
+    /*
+    if(!isOpen)
+    {
+      console.log('open = true '+isOpen);
+    }else{
+      console.log('open = false '+isOpen);
+    }
+    */
     //>...............................?
     Getdata();
   };
@@ -317,6 +336,14 @@ function App() {
     if(openComment){
       setComments([]);
       getMovies();
+    }
+  };
+
+  const handleLink = async(link) => {
+    if(link === null || link === undefined || link.length === 0){
+    alert('No link !');
+    }else{
+      window.open(link);
     }
   };
 
@@ -483,7 +510,7 @@ function App() {
       <label className="textLi">IMAGE URL</label>
       <textarea
         className="inputForm"
-        rows="5" 
+        rows="4" 
         cols="10"
         type="text"
         value = {newImgUrl}
@@ -491,6 +518,19 @@ function App() {
         onChange={(event)=>{
           event.preventDefault();
           setNewImgUrl(event.target.value);
+        }}
+      />
+      <label className="textLi">LINK URL</label>
+      <textarea
+        className="inputForm"
+        rows="2" 
+        cols="10"
+        type="text"
+        value = {newLinkUrl}
+        placeholder="URL of movie" 
+        onChange={(event)=>{
+          event.preventDefault();
+          setNewLinkUrl(event.target.value);
         }}
       />
       <label className="textLi">FRESHNESS</label>
@@ -544,6 +584,7 @@ function App() {
         handlePoster={handlePoster}
         updateRating={updateRatingVoter}
         handleComment={handleComment}
+        handleLink={handleLink}
       />
     </div>
     </div>
