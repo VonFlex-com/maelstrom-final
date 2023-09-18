@@ -6,7 +6,7 @@ const colorIndex = [
     { id: 'JuTO8hC1k1X4F4G9FRN4YM44XDd2', color: '#660033', name: 'Mila'},
     { id: 'MWV2hOiBM1dThcKlHP1EvEfJBjM2', color: '#31221c', name: 'Robert'},
     { id: 'OBQVOuQRGnbRHWjggwoMG18caEw1', color: '#442244', name: 'Helena'},
-    { id: 'm6deukaIolZU78gXOMWBQgKDrSD2', color: '#800033', name: 'Daria'},
+    { id: 'ARYl5yZ2bjQN0k5GmX7fl9kCQGn2', color: '#800033', name: 'Jérémy'},
 ];
 
 export default colorIndex;
